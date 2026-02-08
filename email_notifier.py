@@ -2,7 +2,7 @@
 Email Notification Module
 
 Handles sending email notifications via SMTP when Fear and Greed indices
-reach extreme greed thresholds.
+reach extreme fear thresholds.
 """
 
 import os
@@ -38,7 +38,9 @@ class EmailNotifier:
                 "Set SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, and NOTIFICATION_EMAIL environment variables."
             )
     
-    def _create_email_message(self, index_name: str, value: float, rating: str) -> MIMEMultipart:
+    def _create_email_message(
+        self, index_name: str, value: float, rating: str, extreme_fear: bool = True
+    ) -> MIMEMultipart:
         """
         Create email message with HTML and plain text content.
         
@@ -46,18 +48,20 @@ class EmailNotifier:
             index_name: Name of the index
             value: Current index value
             rating: Current rating
+            extreme_fear: If True, alert is for extreme fear; else extreme greed
             
         Returns:
             MIMEMultipart message object
         """
-        subject = f"Alert: {index_name} - Extreme Greed Detected"
+        alert_type = "Extreme Fear" if extreme_fear else "Extreme Greed"
+        subject = f"Alert: {index_name} - {alert_type} Detected"
         
         html_body = f"""
         <html>
           <head></head>
           <body>
             <h2>Fear and Greed Index Alert</h2>
-            <p><strong>{index_name}</strong> has reached <strong>Extreme Greed</strong> levels!</p>
+            <p><strong>{index_name}</strong> has reached <strong>{alert_type}</strong> levels!</p>
             <table style="border-collapse: collapse; margin: 20px 0;">
               <tr>
                 <td style="padding: 8px; border: 1px solid #ddd;"><strong>Index:</strong></td>
@@ -80,7 +84,7 @@ class EmailNotifier:
         text_body = f"""
 Fear and Greed Index Alert
 
-{index_name} has reached Extreme Greed levels!
+{index_name} has reached {alert_type} levels!
 
 Index: {index_name}
 Value: {value}
@@ -102,19 +106,22 @@ This is an automated notification from your Fear and Greed Index Tracker.
         
         return message
     
-    def send_notification(self, index_name: str, value: float, rating: str) -> None:
+    def send_notification(
+        self, index_name: str, value: float, rating: str, extreme_fear: bool = True
+    ) -> None:
         """
-        Send email notification when index reaches extreme greed.
+        Send email notification when index reaches extreme fear (or extreme greed).
         
         Args:
             index_name: Name of the index
             value: Current index value
             rating: Current rating
+            extreme_fear: If True, alert is for extreme fear; else extreme greed
             
         Raises:
             smtplib.SMTPException: If email sending fails
         """
-        message = self._create_email_message(index_name, value, rating)
+        message = self._create_email_message(index_name, value, rating, extreme_fear=extreme_fear)
         
         try:
             with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:

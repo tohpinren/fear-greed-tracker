@@ -48,7 +48,7 @@ Click **New repository secret** for each secret below:
 
 #### THRESHOLD (Optional)
 - **Name**: `THRESHOLD`
-- **Value**: Threshold for extreme greed (default: `75`)
+- **Value**: Threshold for extreme fear (default: `25`). Notify when value <= THRESHOLD.
   - Only add this if you want to change from the default
 
 ## Gmail-Specific Setup
@@ -152,12 +152,12 @@ After adding all secrets:
 
 ### Test Email Sending
 
-To test email sending without waiting for extreme greed:
+To test email sending without waiting for extreme fear:
 
-1. Temporarily lower the threshold by setting `THRESHOLD` secret to `0`
+1. Temporarily set `THRESHOLD` secret to `100` (so any value triggers)
 2. Run workflow manually
 3. Check your email for notification
-4. Set threshold back to `75`
+4. Set threshold back to `25`
 
 ## Security Notes
 

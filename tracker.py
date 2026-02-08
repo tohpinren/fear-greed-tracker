@@ -3,7 +3,7 @@
 Fear and Greed Index Tracker
 
 Fetches data from CNN Fear and Greed Index and Crypto Fear and Greed Index APIs,
-checks for extreme greed conditions, stores historical data, and sends notifications.
+checks for extreme fear conditions, stores historical data, and sends notifications.
 """
 
 import json
@@ -18,17 +18,35 @@ import requests
 from email_notifier import EmailNotifier
 
 
+CNN_GRAPH_DATA_URL = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata"
+
+CNN_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.cnn.com/",
+    "Origin": "https://www.cnn.com",
+}
+
+
 def fetch_cnn_fear_greed() -> Optional[Dict]:
     """
     Fetch CNN Fear and Greed Index data from the API.
     
+    Uses browser-like headers to avoid 418 (blocked bot) responses from the API.
+    
     Returns:
         Dictionary containing score, rating, and timestamp, or None if fetch fails
     """
-    url = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata"
-    
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(
+            CNN_GRAPH_DATA_URL,
+            headers=CNN_HEADERS,
+            timeout=10,
+        )
         response.raise_for_status()
         data = response.json()
         
@@ -113,14 +131,20 @@ def save_history(file_path: Path, history: Dict) -> None:
         raise
 
 
-def should_send_notification(history: Dict, threshold: int = 75, cooldown_hours: int = 24) -> bool:
+def should_send_notification(
+    history: Dict,
+    threshold: int,
+    cooldown_hours: int = 24,
+    extreme_fear: bool = True,
+) -> bool:
     """
     Determine if a notification should be sent based on threshold and cooldown.
     
     Args:
         history: History dictionary containing last_notification timestamp
-        threshold: Value threshold for extreme greed (default: 75)
+        threshold: Value threshold; for extreme fear notify when value <= threshold
         cooldown_hours: Hours to wait before sending another notification (default: 24)
+        extreme_fear: If True, notify when value <= threshold; if False, when value >= threshold
         
     Returns:
         True if notification should be sent, False otherwise
@@ -131,8 +155,14 @@ def should_send_notification(history: Dict, threshold: int = 75, cooldown_hours:
     latest_entry = history["history"][-1]
     current_value = latest_entry.get("value")
     
-    if current_value is None or current_value < threshold:
+    if current_value is None:
         return False
+    if extreme_fear:
+        if current_value > threshold:
+            return False
+    else:
+        if current_value < threshold:
+            return False
     
     last_notification = history.get("last_notification")
     if last_notification is None:
@@ -211,8 +241,9 @@ def track_index(
     history_path: Path,
     notifications_log_path: Path,
     email_notifier: Optional[EmailNotifier],
-    threshold: int = 75,
+    threshold: int = 25,
     dry_run: bool = False,
+    extreme_fear: bool = True,
 ) -> Tuple[bool, Optional[Dict]]:
     """
     Track a single index: fetch data, update history, check threshold, send notification.
@@ -223,8 +254,9 @@ def track_index(
         history_path: Path to history JSON file
         notifications_log_path: Path to notifications log JSON file
         email_notifier: EmailNotifier instance or None
-        threshold: Threshold value for extreme greed (default: 75)
+        threshold: For extreme_fear, notify when value <= threshold (default: 25)
         dry_run: If True, skip sending emails
+        extreme_fear: If True, notify on extreme fear (value <= threshold); else extreme greed (value >= threshold)
         
     Returns:
         Tuple of (notification_sent: bool, current_data: Dict or None)
@@ -244,14 +276,18 @@ def track_index(
     history = load_history(history_path)
     update_history(history, current_data, index_name)
     
-    should_notify = should_send_notification(history, threshold)
+    should_notify = should_send_notification(history, threshold, extreme_fear=extreme_fear)
+    triggers = (value is not None and value <= threshold) if extreme_fear else (value is not None and value >= threshold)
     
-    if should_notify and value is not None and value >= threshold:
-        print(f"{index_name} reached extreme greed threshold ({value} >= {threshold})")
+    if should_notify and triggers:
+        if extreme_fear:
+            print(f"{index_name} reached extreme fear threshold ({value} <= {threshold})")
+        else:
+            print(f"{index_name} reached extreme greed threshold ({value} >= {threshold})")
         
         if not dry_run and email_notifier:
             try:
-                email_notifier.send_notification(index_name, value, rating)
+                email_notifier.send_notification(index_name, value, rating, extreme_fear=extreme_fear)
                 history["last_notification"] = datetime.now(timezone.utc).isoformat()
                 log_notification(notifications_log_path, index_name, value, rating)
                 print(f"Notification sent for {index_name}")
@@ -263,10 +299,13 @@ def track_index(
             print(f"[DRY RUN] Would send notification for {index_name}")
             return True, current_data
     else:
-        if value is not None and value >= threshold:
-            print(f"{index_name} is at extreme greed but notification cooldown active")
+        if triggers:
+            print(f"{index_name} is at extreme fear but notification cooldown active" if extreme_fear else f"{index_name} is at extreme greed but notification cooldown active")
         else:
-            print(f"{index_name} below threshold ({value} < {threshold})")
+            if extreme_fear:
+                print(f"{index_name} above fear threshold ({value} > {threshold}); no notification")
+            else:
+                print(f"{index_name} below greed threshold ({value} < {threshold}); no notification")
     
     save_history(history_path, history)
     return False, current_data
@@ -281,7 +320,7 @@ def main():
     crypto_history_path = data_dir / "crypto_fear_greed_history.json"
     notifications_log_path = data_dir / "notifications_log.json"
     
-    threshold = int(os.getenv("THRESHOLD", "75"))
+    threshold = int(os.getenv("THRESHOLD", "25"))
     
     email_notifier = None
     if not dry_run:
@@ -292,8 +331,8 @@ def main():
             print("Continuing without email notifications...", file=sys.stderr)
     
     print("=" * 60)
-    print("Fear and Greed Index Tracker")
-    print(f"Threshold: {threshold}")
+    print("Fear and Greed Index Tracker (notify on extreme fear)")
+    print(f"Threshold: value <= {threshold} triggers notification")
     print(f"Dry Run: {dry_run}")
     print("=" * 60)
     
@@ -305,6 +344,7 @@ def main():
         email_notifier,
         threshold,
         dry_run,
+        extreme_fear=True,
     )
     
     crypto_notified, crypto_data = track_index(
@@ -315,6 +355,7 @@ def main():
         email_notifier,
         threshold,
         dry_run,
+        extreme_fear=True,
     )
     
     print("=" * 60)

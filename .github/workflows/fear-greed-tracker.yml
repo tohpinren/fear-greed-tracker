@@ -34,7 +34,7 @@ jobs:
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
-          THRESHOLD: ${{ secrets.THRESHOLD || '75' }}
+          THRESHOLD: ${{ secrets.THRESHOLD || '25' }}
         run: |
           python tracker.py
           

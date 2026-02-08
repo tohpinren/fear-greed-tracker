@@ -1,11 +1,11 @@
 # Fear and Greed Index Tracker
 
-Automated tracker for monitoring CNN Fear and Greed Index and Crypto Fear and Greed Index. Sends email notifications when either index reaches extreme greed levels (≥75).
+Automated tracker for monitoring CNN Fear and Greed Index and Crypto Fear and Greed Index. Sends email notifications when either index reaches **extreme fear** levels (value ≤ 25).
 
 ## Features
 
 - **Dual Index Tracking**: Monitors both CNN Fear and Greed Index and Crypto Fear and Greed Index
-- **Email Notifications**: Sends separate alerts when each index reaches extreme greed
+- **Email Notifications**: Sends separate alerts when each index reaches **extreme fear** (value ≤ 25). No notifications for extreme greed.
 - **Historical Data**: Stores index values and ratings in JSON format
 - **Cooldown Protection**: Prevents notification spam with 24-hour cooldown between alerts
 - **Free Infrastructure**: Runs entirely on GitHub Actions (free tier)
@@ -109,7 +109,7 @@ Add the following secrets:
 
 ### Threshold
 
-The default threshold for extreme greed is **75**. You can change this by:
+The default threshold for extreme fear is **25** (notify when value ≤ 25). You can change this by:
 - Setting `THRESHOLD` GitHub Secret (for GitHub Actions)
 - Setting `THRESHOLD` environment variable (for local runs)
 - Modifying the default in `tracker.py`
@@ -131,7 +131,7 @@ Cron format examples:
 
 ### Notification Cooldown
 
-Notifications have a 24-hour cooldown to prevent spam. If an index stays in extreme greed, you'll only receive one notification per day per index.
+Notifications have a 24-hour cooldown to prevent spam. If an index stays in extreme fear, you'll only receive one notification per day per index.
 
 ## File Structure
 
@@ -190,7 +190,7 @@ Check the `data/` directory in your repository for historical index values and n
 
 ### Email Notifications
 
-When an index reaches extreme greed (≥75), you'll receive an email with:
+When an index reaches extreme fear (≤25), you'll receive an email with:
 - Index name
 - Current value
 - Rating
