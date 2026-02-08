@@ -1,0 +1,13 @@
+{
+  "last_updated": null,
+  "history": [],
+  "last_notification": null,
+  "notifications": [
+    {
+      "timestamp": "2026-02-08T08:42:01.472447+00:00",
+      "index": "Crypto Fear and Greed Index",
+      "value": 7,
+      "rating": "extreme_fear"
+    }
+  ]
+}
