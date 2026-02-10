@@ -14,6 +14,12 @@
       "index": "Crypto Fear and Greed Index",
       "value": 14,
       "rating": "extreme_fear"
+    },
+    {
+      "timestamp": "2026-02-10T13:02:56.809111+00:00",
+      "index": "Crypto Fear and Greed Index",
+      "value": 9,
+      "rating": "extreme_fear"
     }
   ]
 }
