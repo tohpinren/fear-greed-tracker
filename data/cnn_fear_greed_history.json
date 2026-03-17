@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-17T01:46:25.771250+00:00",
+  "last_updated": "2026-03-17T06:58:25.570627+00:00",
   "history": [
     {
       "timestamp": "2026-02-06T23:59:58+00:00",
@@ -888,7 +888,13 @@
       "value": 22.8,
       "rating": "extreme fear",
       "notified": false
+    },
+    {
+      "timestamp": "2026-03-17T00:59:49+00:00",
+      "value": 22.4571428571429,
+      "rating": "extreme fear",
+      "notified": false
     }
   ],
-  "last_notification": "2026-03-16T01:58:29.424267+00:00"
+  "last_notification": "2026-03-17T06:58:26.646932+00:00"
 }
