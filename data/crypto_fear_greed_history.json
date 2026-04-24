@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-24T13:12:47.900050+00:00",
+  "last_updated": "2026-04-24T18:41:40.839430+00:00",
   "history": [
     {
       "timestamp": "2026-02-06T00:00:00+00:00",
@@ -1846,6 +1846,12 @@
     {
       "timestamp": "2026-04-23T00:00:00+00:00",
       "value": 46,
+      "rating": "fear",
+      "notified": false
+    },
+    {
+      "timestamp": "2026-04-24T00:00:00+00:00",
+      "value": 39,
       "rating": "fear",
       "notified": false
     },
