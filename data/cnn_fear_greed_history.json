@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-25T06:36:05.799188+00:00",
+  "last_updated": "2026-08-25T12:36:31.854402+00:00",
   "history": [
     {
       "timestamp": "2026-02-06T23:59:58+00:00",
@@ -4738,6 +4738,12 @@
     {
       "timestamp": "2026-08-25T00:00:00+00:00",
       "value": 54.9714285714286,
+      "rating": "neutral",
+      "notified": false
+    },
+    {
+      "timestamp": "2026-08-25T12:20:16+00:00",
+      "value": 54.6285714285714,
       "rating": "neutral",
       "notified": false
     }
