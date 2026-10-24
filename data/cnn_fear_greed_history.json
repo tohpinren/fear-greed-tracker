@@ -1,12 +1,6 @@
 {
-  "last_updated": "2026-10-23T20:53:28.699099+00:00",
+  "last_updated": "2026-10-24T02:58:09.393733+00:00",
   "history": [
-    {
-      "timestamp": "2026-02-10T23:59:59+00:00",
-      "value": 46.1428571428572,
-      "rating": "neutral",
-      "notified": false
-    },
     {
       "timestamp": "2026-02-11T01:00:00+00:00",
       "value": 46.0857142857143,
@@ -5997,6 +5991,12 @@
     },
     {
       "timestamp": "2026-10-23T20:38:21+00:00",
+      "value": 20.9809523809524,
+      "rating": "extreme fear",
+      "notified": false
+    },
+    {
+      "timestamp": "2026-10-23T23:59:44+00:00",
       "value": 20.9809523809524,
       "rating": "extreme fear",
       "notified": false
