@@ -866,6 +866,12 @@
       "index": "CNN Fear and Greed Index",
       "value": 20.9809523809524,
       "rating": "extreme fear"
+    },
+    {
+      "timestamp": "2026-10-25T02:50:57.524914+00:00",
+      "index": "CNN Fear and Greed Index",
+      "value": 20.9809523809524,
+      "rating": "extreme fear"
     }
   ]
 }
