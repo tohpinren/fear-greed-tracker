@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-27T15:58:59.279129+00:00",
+  "last_updated": "2026-11-28T00:57:44.526486+00:00",
   "history": [
     {
       "timestamp": "2026-03-06T00:00:00+00:00",
@@ -14,12 +14,6 @@
       "notified": false
     },
     {
-      "timestamp": "2026-03-06T00:00:00+00:00",
-      "value": 18,
-      "rating": "extreme_fear",
-      "notified": false
-    },
-    {
       "timestamp": "2026-03-07T00:00:00+00:00",
       "value": 12,
       "rating": "extreme_fear",
@@ -5998,9 +5992,15 @@
     {
       "timestamp": "2026-11-27T00:00:00+00:00",
       "value": 12,
+      "rating": "extreme_fear",
+      "notified": false
+    },
+    {
+      "timestamp": "2026-11-28T00:00:00+00:00",
+      "value": 10,
       "rating": "extreme_fear",
       "notified": false
     }
   ],
-  "last_notification": "2026-11-26T16:13:38.224285+00:00"
+  "last_notification": "2026-11-28T00:57:45.552415+00:00"
 }
